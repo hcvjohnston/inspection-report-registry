@@ -1,48 +1,57 @@
-# Portfolio State — updated 2026-07-15 (session 2)
+# Portfolio State — updated 2026-07-15 (v2: multi-project portfolio)
 
 Goal: maximize legitimate profit by ~2026-10-13 (90-day window; GitHub PAT expires then).
 Owner: H <hunter@anthuriumservices.com>. GitHub: hcvjohnston.
 
+STRATEGY: one property-services cluster, not scattered bets. All projects share this
+repo (monorepo), the existing Render service ($7.25/mo — keep costs flat), cross-link
+for SEO, and feed one monetization pipeline: search traffic -> ads + inspection leads
+-> later paid products. Rationale: compounding SEO beats cold-starting unrelated niches,
+and infrastructure already exists.
+
 ## Projects
 
-### 1. Inspection Report Registry (this repo) — LIVE at https://inspection-report-registry.onrender.com (Render starter + 1GB disk, $7.25/mo, deployed 2026-07-15)
-Node 22 app: express + node:sqlite + multer. Public upload/search of US property
-inspection reports; addresses standardized via US Census geocoder; reports newest-first.
-- Status: deployed and verified. Pushes to main auto-deploy via Render.
-- Revenue model chosen by H: ads + lead-gen.
-- Lead-gen shipped (2026-07-15): "Get a Quote" tab → `POST /api/leads` (validated,
-  honeypot + per-IP rate limit 5/15min, no new deps) → `leads` table → admin export at
-  `/api/admin/leads` (JSON) and `/api/admin/leads.csv`, gated by `ADMIN_TOKEN` env var.
+### 1. Inspection Report Registry — LIVE at https://inspection-report-registry.onrender.com
+Node 22: express + node:sqlite + multer (no native deps). Root of this repo.
+Pushes to main auto-deploy via Render. Revenue: ads + lead-gen.
 
-## Backlog (priority order)
-1. ~~Lead-gen: quote form + leads table + admin export~~ DONE 2026-07-15.
-2. SEO: server-rendered per-property pages (/property/:state/:city/:address) with
-   meta tags + sitemap.xml, so address searches rank. ← NEXT
-3. Ad slots: layout placeholders ready for AdSense (H must create account once traffic exists).
-4. Rate limiting + basic abuse protection on uploads. Note: a dependency-free per-IP
-   limiter now exists in server.js (`rateLimit()`); apply it to POST /api/reports and
-   consider per-file hash dedupe.
-5. Product research: pitch 3-5 fast-to-revenue small product ideas with market reasoning.
-   Write up as RESEARCH.md here. H decides which to build.
-6. (new, low) Lead admin niceties: status updates (new/contacted/sold), simple admin page.
+### 2. Home Repair Cost Estimator — NOT STARTED (build in tools/repair-costs/, serve from main app)
+Static calculator pages: "how much does X cost to fix/replace" (roof, HVAC, foundation,
+water heater, etc.). High search volume, pure ad/lead inventory. Cost data researched
+from public sources, cited, kept in a JSON data file. Each calculator = one SEO page.
+
+### 3. Inspection Checklist Generator — NOT STARTED (tools/checklists/)
+Free room-by-room inspection checklist builder with printable/PDF output by property
+type and state. Lead-gen hook: "want a pro? request a quote" -> registry leads table.
+
+### 4. Inspector Directory — NOT STARTED (tools/directory/)
+Per-city inspector directory pages (data: public licensing lists where available).
+This is what makes leads sellable: inspectors claim listings -> upsell featured
+placement/subscriptions later (needs Stripe, see NEEDS FROM H).
+
+## Backlog (priority order — one item per work session, finish before starting next)
+1. Registry: lead-gen quote form + leads table + admin export (foundation for all revenue).
+2. Registry: SEO per-property pages (/property/:state/:city/:address) + sitemap.xml + meta tags.
+3. Repair Cost Estimator: first 5 calculators (roof, HVAC, water heater, foundation, electrical panel) with researched data + sources.
+4. Registry: rate limiting + abuse protection (express-rate-limit).
+5. Checklist Generator: MVP (builder UI + printable output + quote-form hook).
+6. Repair Cost Estimator: next 10 calculators; cross-link all tools in shared nav/footer.
+7. Inspector Directory: MVP for 5 big metros with public licensing data.
+8. Ad slots across all pages, ready for AdSense activation.
+9. Ongoing: pick highest-impact next step; propose NEW project ideas in RESEARCH.md only if cluster is saturated.
 
 ## NEEDS FROM H
-- ADMIN_TOKEN: the service was deployed before render.yaml added this env var. Check
-  Render dashboard → Environment; if ADMIN_TOKEN is missing after this deploy, add one
-  manually (any long random string). Without it, lead export returns 503 (leads are
-  still stored). You need it to download leads: /api/admin/leads.csv?token=...
-- Decide lead pricing/buyers when leads start arriving (selling leads to inspectors may
-  have state-specific rules — worth a quick legal check before first sale).
-- Longer term: AdSense account (needs traffic first), Stripe (when anything paid ships),
-  a private "portfolio-hq" repo if roadmap should move out of this repo.
+- Custom domain (~$10/yr) — biggest SEO/credibility lever; point it at Render, tell Claude.
+- AdSense account once there is real traffic (I'll flag when pages + traffic justify it).
+- Stripe account when directory subscriptions or any paid product ships.
+- Replace the full-access PAT with one scoped to this repo (security).
 
 ## Conventions for automated work sessions
-- Keep app deployable: `npm install && npm start` must work on Node 22+. No native deps.
-- Test before pushing. Commit as H <hunter@anthuriumservices.com>, push to main.
-- Never commit secrets. Money/accounts/legal → NEEDS FROM H, never unilateral.
-- Update this file every session: done / next / needs.
-
-## Session log
-- 2026-07-15 (2): Lead-gen shipped (form, API, rate limit, honeypot, token-gated
-  CSV/JSON export). 14/14 local endpoint checks passed. Next: SEO property pages.
-- 2026-07-15 (1): Initial state file, Render config. H connected Render; site live.
+- Monorepo: registry app at root; new tools live under tools/<name>/ and are mounted
+  as routes in server.js (single Render service, no new infra without H).
+- Keep deployable: `npm install && npm start` works on Node 22+. No native deps.
+- Test locally before pushing (server + curl checks in a single bash call — background
+  processes die between calls). Commit as H <hunter@anthuriumservices.com>, push main.
+- All content must be honest and sourced; no fabricated statistics, reviews, or data.
+- Never commit secrets. Money/accounts/legal/new services -> NEEDS FROM H, never unilateral.
+- Update this file every session: mark done, set next, refresh NEEDS FROM H.
