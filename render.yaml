@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: inspection-report-registry
+    runtime: node
+    plan: starter  # persistent disk requires a paid instance; free tier loses uploads on redeploy
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATA_DIR
+        value: /data
+    disk:
+      name: registry-data
+      mountPath: /data
+      sizeGB: 1
