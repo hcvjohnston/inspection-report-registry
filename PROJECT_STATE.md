@@ -5,10 +5,10 @@ Owner: H <hunter@anthuriumservices.com>. GitHub: hcvjohnston.
 
 ## Projects
 
-### 1. Inspection Report Registry (this repo) — BUILT, not yet deployed
+### 1. Inspection Report Registry (this repo) — LIVE at https://inspection-report-registry.onrender.com (Render starter + 1GB disk, $7.25/mo, deployed 2026-07-15)
 Node 22 app: express + node:sqlite + multer. Public upload/search of US property
 inspection reports; addresses standardized via US Census geocoder; reports newest-first.
-- Status: pushed to GitHub; awaiting H connecting repo to Render (render.yaml ready).
+- Status: deployed and verified. Pushes to main auto-deploy via Render.
 - Revenue model chosen by H: ads + lead-gen.
 
 ## Backlog (priority order)
@@ -22,7 +22,7 @@ inspection reports; addresses standardized via US Census geocoder; reports newes
    Write up as RESEARCH.md here. H decides which to build.
 
 ## NEEDS FROM H
-- Connect this repo to Render (Blueprint deploy; starter instance for persistent disk).
+- (done 2026-07-15) Render connected and live.
 - Longer term: AdSense account (needs traffic first), Stripe (when anything paid ships),
   a private "portfolio-hq" repo if roadmap should move out of this repo.
 
