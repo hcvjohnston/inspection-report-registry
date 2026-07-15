@@ -8,6 +8,8 @@ services:
     envVars:
       - key: DATA_DIR
         value: /data
+      - key: ADMIN_TOKEN
+        generateValue: true  # protects /api/admin/leads exports; view/rotate in Render dashboard
     disk:
       name: registry-data
       mountPath: /data

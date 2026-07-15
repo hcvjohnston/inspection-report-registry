@@ -54,6 +54,7 @@
   <div class="tabs">
     <button id="tab-search" class="active" onclick="showTab('search')">🔍 Find Reports</button>
     <button id="tab-upload" onclick="showTab('upload')">📤 Upload a Report</button>
+    <button id="tab-quote" onclick="showTab('quote')">📋 Get a Quote</button>
   </div>
 
   <!-- SEARCH -->
@@ -108,15 +109,73 @@
       <div class="msg" id="u-msg"></div>
     </div>
   </section>
+
+  <!-- QUOTE REQUEST -->
+  <section id="panel-quote" style="display:none;">
+    <div class="card">
+      <h2 style="font-size:1.05rem;">Request an inspection quote</h2>
+      <p class="muted" style="margin-top:6px;">Tell us about the property and a licensed local inspector will contact you with pricing. Free, no obligation.</p>
+      <div class="row2">
+        <div><label>Your name *</label><input id="l-name" placeholder="Jane Smith" autocomplete="name"></div>
+        <div><label>Email</label><input id="l-email" type="email" placeholder="jane@example.com" autocomplete="email"></div>
+      </div>
+      <div class="row2">
+        <div><label>Phone</label><input id="l-phone" type="tel" placeholder="(555) 123-4567" autocomplete="tel"></div>
+        <div><label>Timeframe</label>
+          <select id="l-timeframe">
+            <option value="ASAP">ASAP</option>
+            <option value="Within 2 weeks">Within 2 weeks</option>
+            <option value="Within a month">Within a month</option>
+            <option value="Flexible / just researching">Flexible / just researching</option>
+          </select>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:8px; font-size:.8rem;">* Provide email or phone so an inspector can reach you.</p>
+
+      <h2 style="font-size:1.05rem; margin-top:20px;">Property</h2>
+      <label>Street address</label>
+      <input id="l-street" placeholder="123 Main St">
+      <div class="row2">
+        <div><label>City *</label><input id="l-city" placeholder="Springfield"></div>
+        <div><label>State *</label><select id="l-state"><option value="">Select…</option></select></div>
+      </div>
+      <div class="row2">
+        <div><label>ZIP</label><input id="l-zip" inputmode="numeric" placeholder="62701"></div>
+        <div><label>Property type</label>
+          <select id="l-ptype">
+            <option value="Single-family">Single-family</option><option value="Condo / Townhome">Condo / Townhome</option>
+            <option value="Multi-family">Multi-family</option><option value="Manufactured / Mobile">Manufactured / Mobile</option>
+            <option value="Commercial">Commercial</option>
+          </select>
+        </div>
+      </div>
+      <label>Inspection needed</label>
+      <select id="l-service">
+        <option value="General Home Inspection">General Home Inspection</option>
+        <option value="Roof">Roof</option><option value="Pest / Termite">Pest / Termite</option>
+        <option value="Sewer / Plumbing">Sewer / Plumbing</option><option value="Electrical">Electrical</option>
+        <option value="HVAC">HVAC</option><option value="Foundation / Structural">Foundation / Structural</option>
+        <option value="Mold / Air Quality">Mold / Air Quality</option><option value="Radon">Radon</option>
+        <option value="Other / Multiple">Other / Multiple</option>
+      </select>
+      <label>Anything else?</label>
+      <textarea id="l-notes" rows="2" placeholder="e.g. buying this home, closing in 3 weeks"></textarea>
+      <input id="l-website" name="website" style="position:absolute; left:-9999px;" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="btn" id="l-submit" onclick="submitLead()">Request quote</button>
+      <div class="msg" id="l-msg"></div>
+    </div>
+  </section>
 </main>
 
 <script>
 const STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
-const sel = document.getElementById('u-state');
-STATES.forEach(s => sel.add(new Option(s, s)));
+for (const id of ['u-state','l-state']) {
+  const sel = document.getElementById(id);
+  STATES.forEach(s => sel.add(new Option(s, s)));
+}
 
 function showTab(name) {
-  for (const t of ['search','upload']) {
+  for (const t of ['search','upload','quote']) {
     document.getElementById('panel-'+t).style.display = t === name ? '' : 'none';
     document.getElementById('tab-'+t).classList.toggle('active', t === name);
   }
@@ -205,6 +264,38 @@ async function submitReport() {
   finally { btn.disabled = false; btn.textContent = 'Upload report'; }
 
   function err(t) { msg.className = 'msg err'; msg.textContent = t; btn.disabled = false; btn.textContent = 'Upload report'; }
+}
+
+// ---- Quote request ----
+async function submitLead() {
+  const msg = document.getElementById('l-msg');
+  const btn = document.getElementById('l-submit');
+  msg.className = 'msg';
+  const err = t => { msg.className = 'msg err'; msg.textContent = t; btn.disabled = false; btn.textContent = 'Request quote'; };
+
+  if (!v('l-name')) return err('Please enter your name.');
+  if (!v('l-email') && !v('l-phone')) return err('Provide an email or phone number so an inspector can reach you.');
+  if (!v('l-city') || !v('l-state')) return err('City and state are required.');
+
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: v('l-name'), email: v('l-email'), phone: v('l-phone'),
+        street: v('l-street'), city: v('l-city'), state: v('l-state'), zip: v('l-zip'),
+        property_type: v('l-ptype'), service_type: v('l-service'),
+        timeframe: v('l-timeframe'), notes: v('l-notes'), website: v('l-website')
+      })
+    });
+    const json = await res.json();
+    if (!res.ok) return err(json.error || 'Something went wrong. Please try again.');
+    msg.className = 'msg ok';
+    msg.textContent = '✓ Quote request received. A local inspector will be in touch soon.';
+    for (const id of ['l-name','l-email','l-phone','l-street','l-city','l-zip','l-notes']) document.getElementById(id).value = '';
+  } catch (e) { err('Network error: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Request quote'; }
 }
 
 function v(id) { return document.getElementById(id).value.trim(); }

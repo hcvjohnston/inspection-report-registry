@@ -9,6 +9,7 @@ A nationwide (US) website where anyone can upload property inspection reports an
 - **Unit-aware** — Apt/Suite/Unit numbers create separate property records; "Apt 2" and "Apartment 2" match each other.
 - **Newest-first history** — reports sort by inspection date (then upload time) descending, always.
 - **Search** — partial address search across all properties with report counts.
+- **Quote requests** — visitors can request an inspection quote; leads are stored and exportable (CSV/JSON) for sale to local inspectors.
 
 ## Run locally
 
@@ -56,3 +57,8 @@ DATA_DIR=/var/lib/inspection-registry PORT=3000 node server.js
 | GET | `/api/properties/:id/reports` | Property + its reports, newest → oldest |
 | POST | `/api/reports` | Multipart upload: address fields + metadata + files |
 | GET | `/api/files/:id` | Download/view a stored report file |
+| POST | `/api/leads` | Request an inspection quote (rate-limited, honeypot-protected) |
+| GET | `/api/admin/leads` | All leads as JSON — requires `ADMIN_TOKEN` (Bearer header or `?token=`) |
+| GET | `/api/admin/leads.csv` | Leads as CSV download — same auth |
+
+Lead export is disabled (503) until the `ADMIN_TOKEN` environment variable is set. `render.yaml` auto-generates one on deploy; find it in the Render dashboard.
