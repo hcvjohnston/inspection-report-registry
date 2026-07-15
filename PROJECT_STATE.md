@@ -1,57 +1,50 @@
-# Portfolio State — updated 2026-07-15 (v2: multi-project portfolio)
+# Portfolio State — updated 2026-07-15 (v3: open portfolio, any profitable niche)
 
 Goal: maximize legitimate profit by ~2026-10-13 (90-day window; GitHub PAT expires then).
 Owner: H <hunter@anthuriumservices.com>. GitHub: hcvjohnston.
 
-STRATEGY: one property-services cluster, not scattered bets. All projects share this
-repo (monorepo), the existing Render service ($7.25/mo — keep costs flat), cross-link
-for SEO, and feed one monetization pipeline: search traffic -> ads + inspection leads
--> later paid products. Rationale: compounding SEO beats cold-starting unrelated niches,
-and infrastructure already exists.
+STRATEGY (per H): not limited to the property niche. Build whatever is fastest to
+legitimate revenue. Portfolio mix: (a) finish monetizing the live registry site,
+(b) free tools with search demand monetized by ads, (c) digital products sellable via
+Stripe/Gumroad once H provides an account, (d) research-driven new bets in any niche.
+Keep infra costs flat: everything ships on the existing Render service (monorepo,
+tools mounted as routes) unless H approves new spend.
 
-## Projects
+## Live assets
+### Inspection Report Registry — LIVE at https://inspection-report-registry.onrender.com
+Node 22: express + node:sqlite + multer, root of this repo. Auto-deploys from main.
+Revenue: ads + inspection lead-gen.
 
-### 1. Inspection Report Registry — LIVE at https://inspection-report-registry.onrender.com
-Node 22: express + node:sqlite + multer (no native deps). Root of this repo.
-Pushes to main auto-deploy via Render. Revenue: ads + lead-gen.
-
-### 2. Home Repair Cost Estimator — NOT STARTED (build in tools/repair-costs/, serve from main app)
-Static calculator pages: "how much does X cost to fix/replace" (roof, HVAC, foundation,
-water heater, etc.). High search volume, pure ad/lead inventory. Cost data researched
-from public sources, cited, kept in a JSON data file. Each calculator = one SEO page.
-
-### 3. Inspection Checklist Generator — NOT STARTED (tools/checklists/)
-Free room-by-room inspection checklist builder with printable/PDF output by property
-type and state. Lead-gen hook: "want a pro? request a quote" -> registry leads table.
-
-### 4. Inspector Directory — NOT STARTED (tools/directory/)
-Per-city inspector directory pages (data: public licensing lists where available).
-This is what makes leads sellable: inspectors claim listings -> upsell featured
-placement/subscriptions later (needs Stripe, see NEEDS FROM H).
-
-## Backlog (priority order — one item per work session, finish before starting next)
-1. Registry: lead-gen quote form + leads table + admin export (foundation for all revenue).
-2. Registry: SEO per-property pages (/property/:state/:city/:address) + sitemap.xml + meta tags.
-3. Repair Cost Estimator: first 5 calculators (roof, HVAC, water heater, foundation, electrical panel) with researched data + sources.
-4. Registry: rate limiting + abuse protection (express-rate-limit).
-5. Checklist Generator: MVP (builder UI + printable output + quote-form hook).
-6. Repair Cost Estimator: next 10 calculators; cross-link all tools in shared nav/footer.
-7. Inspector Directory: MVP for 5 big metros with public licensing data.
-8. Ad slots across all pages, ready for AdSense activation.
-9. Ongoing: pick highest-impact next step; propose NEW project ideas in RESEARCH.md only if cluster is saturated.
+## Backlog (priority order — one item per session, finish before starting next)
+1. Registry: lead-gen quote form + leads table + admin export (makes the live site sellable).
+2. Registry: SEO per-property pages + sitemap.xml + meta tags (makes the live site findable).
+3. RESEARCH.md: identify 5 fastest-to-revenue opportunities in ANY niche. For each:
+   search demand evidence, competition, monetization path, build cost, time to first
+   dollar. Rank them. Sources cited, no guesswork presented as data.
+4. Build the #1 ranked opportunity from RESEARCH.md (MVP, shipped to the live service
+   under tools/<name>/ or as static pages).
+5. Digital product #1: produce a genuinely excellent paid-quality asset (e.g. template
+   pack or spreadsheet toolkit) in whatever niche research supports; stage it in
+   products/ ready to list the moment H provides Gumroad/Stripe.
+6. Build the #2 ranked opportunity from RESEARCH.md.
+7. Ad slots across all pages, ready for AdSense activation.
+8. Registry: rate limiting + abuse protection.
+9. Ongoing: re-rank backlog each session based on results; append new pitches to RESEARCH.md.
 
 ## NEEDS FROM H
-- Custom domain (~$10/yr) — biggest SEO/credibility lever; point it at Render, tell Claude.
-- AdSense account once there is real traffic (I'll flag when pages + traffic justify it).
-- Stripe account when directory subscriptions or any paid product ships.
+- Custom domain(s) (~$10/yr each) — biggest SEO/credibility lever for any of these.
+- Gumroad or Stripe account — unblocks selling digital products (backlog #5).
+- AdSense account once traffic justifies it (will flag when).
 - Replace the full-access PAT with one scoped to this repo (security).
 
 ## Conventions for automated work sessions
-- Monorepo: registry app at root; new tools live under tools/<name>/ and are mounted
-  as routes in server.js (single Render service, no new infra without H).
+- Monorepo: registry at root; new tools under tools/<name>/ mounted as routes in
+  server.js; digital products under products/. Single Render service, no new infra
+  or spend without H.
 - Keep deployable: `npm install && npm start` works on Node 22+. No native deps.
-- Test locally before pushing (server + curl checks in a single bash call — background
+- Test locally before pushing (server + curl in a single bash call — background
   processes die between calls). Commit as H <hunter@anthuriumservices.com>, push main.
-- All content must be honest and sourced; no fabricated statistics, reviews, or data.
+- All content honest and sourced; no fabricated statistics, reviews, or data. No spam,
+  SEO tricks that deceive, or scraped proprietary data.
 - Never commit secrets. Money/accounts/legal/new services -> NEEDS FROM H, never unilateral.
 - Update this file every session: mark done, set next, refresh NEEDS FROM H.
