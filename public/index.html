@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inspection Report Registry — US Property Inspection Reports</title>
+<style>
+  :root {
+    --brand: #1a5f4a; --brand-light: #2d8a6e; --bg: #f7f8f7;
+    --card: #ffffff; --text: #1f2937; --muted: #6b7280; --border: #e5e7eb;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+  header { background: var(--brand); color: #fff; padding: 18px 24px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  header h1 { font-size: 1.25rem; font-weight: 700; }
+  header .tag { font-size: .8rem; opacity: .85; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tabs button { flex: 1; padding: 12px; border: 1px solid var(--border); background: var(--card); border-radius: 10px; font-size: 1rem; cursor: pointer; font-weight: 600; color: var(--muted); }
+  .tabs button.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  label { display: block; font-size: .85rem; font-weight: 600; margin: 12px 0 4px; }
+  input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: .95rem; font-family: inherit; }
+  .row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .row, .row2 { grid-template-columns: 1fr; } }
+  .btn { margin-top: 16px; width: 100%; padding: 12px; background: var(--brand); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+  .btn:hover { background: var(--brand-light); }
+  .btn:disabled { opacity: .6; cursor: wait; }
+  .result-item { padding: 14px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .result-item:hover { background: #f0f7f4; }
+  .result-item:last-child { border-bottom: none; }
+  .count-badge { background: var(--brand); color: #fff; border-radius: 999px; padding: 2px 10px; font-size: .8rem; white-space: nowrap; }
+  .report { border-left: 4px solid var(--brand); padding: 12px 16px; margin: 12px 0; background: #fafbfa; border-radius: 0 8px 8px 0; }
+  .report h3 { font-size: 1rem; }
+  .report .meta { color: var(--muted); font-size: .85rem; margin: 4px 0; }
+  .report .files a { display: inline-block; margin: 4px 8px 0 0; font-size: .85rem; color: var(--brand); text-decoration: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; background: #fff; }
+  .badge { font-size: .72rem; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+  .badge.ok { background: #d1f0e2; color: #14532d; }
+  .badge.warn { background: #fef3c7; color: #92400e; }
+  .msg { padding: 12px; border-radius: 8px; margin-top: 12px; font-size: .9rem; display: none; }
+  .msg.err { background: #fee2e2; color: #991b1b; display: block; }
+  .msg.ok { background: #d1f0e2; color: #14532d; display: block; }
+  .muted { color: var(--muted); font-size: .9rem; }
+  .newest-note { font-size: .8rem; color: var(--muted); margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏠 Inspection Report Registry</h1>
+  <span class="tag">Nationwide US property inspection reports — newest first</span>
+</header>
+<main>
+  <div class="tabs">
+    <button id="tab-search" class="active" onclick="showTab('search')">🔍 Find Reports</button>
+    <button id="tab-upload" onclick="showTab('upload')">📤 Upload a Report</button>
+  </div>
+
+  <!-- SEARCH -->
+  <section id="panel-search">
+    <div class="card">
+      <label for="q">Search by address</label>
+      <input id="q" placeholder="e.g. 1600 Pennsylvania Ave NW, Washington DC" autocomplete="off">
+      <p class="newest-note">Type at least 3 characters. Matches any US address with uploaded reports.</p>
+    </div>
+    <div class="card" id="search-results" style="display:none; padding:0;"></div>
+    <div id="property-detail"></div>
+  </section>
+
+  <!-- UPLOAD -->
+  <section id="panel-upload" style="display:none;">
+    <div class="card">
+      <h2 style="font-size:1.05rem;">Property address</h2>
+      <label>Street address *</label>
+      <input id="u-street" placeholder="123 Main St">
+      <div class="row2">
+        <div><label>Unit / Apt (optional)</label><input id="u-unit" placeholder="Apt 4B"></div>
+        <div><label>ZIP (optional)</label><input id="u-zip" placeholder="62701" inputmode="numeric"></div>
+      </div>
+      <div class="row2">
+        <div><label>City *</label><input id="u-city" placeholder="Springfield"></div>
+        <div><label>State *</label><select id="u-state"><option value="">Select…</option></select></div>
+      </div>
+
+      <h2 style="font-size:1.05rem; margin-top:20px;">Report details</h2>
+      <div class="row2">
+        <div><label>Inspection date *</label><input id="u-date" type="date"></div>
+        <div><label>Report type</label>
+          <select id="u-type">
+            <option value="General Home Inspection">General Home Inspection</option>
+            <option value="Roof">Roof</option><option value="Pest / Termite">Pest / Termite</option>
+            <option value="Sewer / Plumbing">Sewer / Plumbing</option><option value="Electrical">Electrical</option>
+            <option value="HVAC">HVAC</option><option value="Foundation / Structural">Foundation / Structural</option>
+            <option value="Mold / Air Quality">Mold / Air Quality</option><option value="Radon">Radon</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="row2">
+        <div><label>Report title</label><input id="u-title" placeholder="Pre-purchase inspection"></div>
+        <div><label>Inspector / company</label><input id="u-inspector" placeholder="ABC Inspections LLC"></div>
+      </div>
+      <label>Notes (optional)</label>
+      <textarea id="u-notes" rows="2" placeholder="Anything future viewers should know"></textarea>
+      <label>Report files * <span class="muted">(PDF, JPG, PNG, WebP — up to 10 files, 25 MB each)</span></label>
+      <input id="u-files" type="file" multiple accept=".pdf,image/jpeg,image/png,image/webp">
+      <button class="btn" id="u-submit" onclick="submitReport()">Upload report</button>
+      <div class="msg" id="u-msg"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
+const sel = document.getElementById('u-state');
+STATES.forEach(s => sel.add(new Option(s, s)));
+
+function showTab(name) {
+  for (const t of ['search','upload']) {
+    document.getElementById('panel-'+t).style.display = t === name ? '' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('active', t === name);
+  }
+}
+
+// ---- Search ----
+let debounce;
+document.getElementById('q').addEventListener('input', e => {
+  clearTimeout(debounce);
+  const q = e.target.value.trim();
+  document.getElementById('property-detail').innerHTML = '';
+  if (q.length < 3) { document.getElementById('search-results').style.display = 'none'; return; }
+  debounce = setTimeout(() => search(q), 300);
+});
+
+async function search(q) {
+  const res = await fetch('/api/properties?q=' + encodeURIComponent(q));
+  const rows = await res.json();
+  const box = document.getElementById('search-results');
+  box.style.display = '';
+  box.innerHTML = rows.length === 0
+    ? '<div class="result-item muted">No properties found. Be the first to upload a report for this address.</div>'
+    : rows.map(p => `
+      <div class="result-item" onclick="loadProperty(${p.id})">
+        <div>
+          <strong>${esc(p.display_address)}</strong><br>
+          <span class="muted">${p.latest_inspection ? 'Latest inspection: ' + p.latest_inspection : 'No reports yet'}</span>
+          ${p.verified ? '<span class="badge ok">✓ verified address</span>' : '<span class="badge warn">unverified</span>'}
+        </div>
+        <span class="count-badge">${p.report_count} report${p.report_count == 1 ? '' : 's'}</span>
+      </div>`).join('');
+}
+
+async function loadProperty(id) {
+  const res = await fetch(`/api/properties/${id}/reports`);
+  const { property, reports } = await res.json();
+  document.getElementById('property-detail').innerHTML = `
+    <div class="card">
+      <h2 style="font-size:1.1rem;">${esc(property.display_address)}
+        ${property.verified ? '<span class="badge ok">✓ verified address</span>' : '<span class="badge warn">unverified</span>'}
+      </h2>
+      <p class="newest-note">${reports.length} report${reports.length == 1 ? '' : 's'}, newest first</p>
+      ${reports.map(r => `
+        <div class="report">
+          <h3>${esc(r.title)} <span class="muted">— ${esc(r.report_type || 'Inspection')}</span></h3>
+          <div class="meta">Inspected ${r.inspection_date}${r.inspector_name ? ' · ' + esc(r.inspector_name) : ''} · uploaded ${r.uploaded_at} UTC</div>
+          ${r.notes ? '<div class="meta">' + esc(r.notes) + '</div>' : ''}
+          <div class="files">${r.files.map(f =>
+            `<a href="/api/files/${f.id}" target="_blank">📄 ${esc(f.original_name)} (${(f.size_bytes/1024/1024).toFixed(1)} MB)</a>`).join('')}
+          </div>
+        </div>`).join('') || '<p class="muted">No reports yet.</p>'}
+    </div>`;
+  document.getElementById('property-detail').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ---- Upload ----
+async function submitReport() {
+  const msg = document.getElementById('u-msg');
+  const btn = document.getElementById('u-submit');
+  msg.className = 'msg';
+  const fd = new FormData();
+  fd.append('street', v('u-street')); fd.append('unit', v('u-unit'));
+  fd.append('city', v('u-city')); fd.append('state', v('u-state')); fd.append('zip', v('u-zip'));
+  fd.append('title', v('u-title') || 'Inspection Report');
+  fd.append('inspection_date', v('u-date')); fd.append('report_type', v('u-type'));
+  fd.append('inspector_name', v('u-inspector')); fd.append('notes', v('u-notes'));
+  const files = document.getElementById('u-files').files;
+  for (const f of files) fd.append('files', f);
+
+  if (!v('u-street') || !v('u-city') || !v('u-state')) return err('Street, city, and state are required.');
+  if (!v('u-date')) return err('Inspection date is required.');
+  if (files.length === 0) return err('Attach at least one PDF or image file.');
+
+  btn.disabled = true; btn.textContent = 'Uploading…';
+  try {
+    const res = await fetch('/api/reports', { method: 'POST', body: fd });
+    const json = await res.json();
+    if (!res.ok) return err(json.error || 'Upload failed.');
+    msg.className = 'msg ok';
+    msg.textContent = json.verified
+      ? '✓ Report uploaded. Address verified against the US Census database.'
+      : '✓ Report uploaded. Address stored as entered (could not be verified — check spelling if unexpected).';
+    for (const id of ['u-street','u-unit','u-city','u-zip','u-title','u-inspector','u-notes','u-date']) document.getElementById(id).value = '';
+    document.getElementById('u-files').value = '';
+  } catch (e) { err('Network error: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Upload report'; }
+
+  function err(t) { msg.className = 'msg err'; msg.textContent = t; btn.disabled = false; btn.textContent = 'Upload report'; }
+}
+
+function v(id) { return document.getElementById(id).value.trim(); }
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+</script>
+</body>
+</html>
