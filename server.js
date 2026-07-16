@@ -311,6 +311,132 @@ app.get('/api/files/:id', (req, res) => {
   res.sendFile(path.join(UPLOAD_DIR, f.stored_name));
 });
 
+// ---------- SEO: server-rendered property pages, sitemap, robots ----------
+const BASE_URL = (process.env.BASE_URL || 'https://inspection-report-registry.onrender.com').replace(/\/+$/, '');
+const escHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const slugify = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'property';
+
+const PAGE_CSS = `
+  :root { --brand:#1a5f4a; --brand-light:#2d8a6e; --bg:#f7f8f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#e5e7eb; }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); }
+  header { background:var(--brand); color:#fff; padding:18px 24px; }
+  header a { color:#fff; text-decoration:none; font-size:1.25rem; font-weight:700; }
+  main { max-width:860px; margin:0 auto; padding:24px 16px 64px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+  .report { border-left:4px solid var(--brand); padding:12px 16px; margin:12px 0; background:#fafbfa; border-radius:0 8px 8px 0; }
+  .report h3 { font-size:1rem; }
+  .report .meta { color:var(--muted); font-size:.85rem; margin:4px 0; }
+  .report .files a { display:inline-block; margin:4px 8px 0 0; font-size:.85rem; color:var(--brand); text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; background:#fff; }
+  .badge { font-size:.72rem; padding:2px 8px; border-radius:999px; font-weight:600; }
+  .badge.ok { background:#d1f0e2; color:#14532d; }
+  .badge.warn { background:#fef3c7; color:#92400e; }
+  .muted { color:var(--muted); font-size:.9rem; }
+  .btn { display:inline-block; margin-top:16px; padding:12px 24px; background:var(--brand); color:#fff; border-radius:8px; font-weight:600; text-decoration:none; }
+  .btn:hover { background:var(--brand-light); }
+`;
+
+function propertyPageHtml(prop, reports) {
+  const addr = prop.display_address;
+  const url = `${BASE_URL}/property/${prop.id}/${slugify(addr)}`;
+  const n = reports.length;
+  const latest = reports[0]?.inspection_date;
+  const types = [...new Set(reports.map(r => r.report_type).filter(Boolean))];
+  const desc = n
+    ? `${n} inspection report${n === 1 ? '' : 's'} on file for ${addr}${latest ? `, most recent ${latest}` : ''}${types.length ? ` — ${types.slice(0, 4).join(', ')}` : ''}. View the inspection history or request a quote from a local inspector.`
+    : `Inspection history page for ${addr}. No reports uploaded yet — be the first to upload one, or request an inspection quote from a local inspector.`;
+  const jsonLd = {
+    '@context': 'https://schema.org', '@type': 'Place', name: addr, url,
+    ...(prop.lat != null && prop.lon != null ? { geo: { '@type': 'GeoCoordinates', latitude: prop.lat, longitude: prop.lon } } : {}),
+    address: { '@type': 'PostalAddress',
+      ...(prop.city ? { addressLocality: prop.city } : {}),
+      ...(prop.state ? { addressRegion: prop.state } : {}),
+      ...(prop.zip ? { postalCode: prop.zip } : {}),
+      addressCountry: 'US' }
+  };
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escHtml(addr)} — Inspection Reports | Inspection Report Registry</title>
+<meta name="description" content="${escHtml(desc)}">
+<link rel="canonical" href="${escHtml(url)}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${escHtml(addr)} — Inspection Reports">
+<meta property="og:description" content="${escHtml(desc)}">
+<meta property="og:url" content="${escHtml(url)}">
+<meta property="og:site_name" content="Inspection Report Registry">
+<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>
+<style>${PAGE_CSS}</style>
+</head>
+<body>
+<header><a href="/">🏠 Inspection Report Registry</a></header>
+<main>
+  <div class="card">
+    <h1 style="font-size:1.2rem;">${escHtml(addr)}
+      ${prop.verified ? '<span class="badge ok">✓ verified address</span>' : '<span class="badge warn">unverified</span>'}
+    </h1>
+    <p class="muted" style="margin-top:6px;">${n} inspection report${n === 1 ? '' : 's'} on file, newest first.</p>
+    ${reports.map(r => `
+    <div class="report">
+      <h3>${escHtml(r.title)} <span class="muted">— ${escHtml(r.report_type || 'Inspection')}</span></h3>
+      <div class="meta">Inspected ${escHtml(r.inspection_date)}${r.inspector_name ? ' · ' + escHtml(r.inspector_name) : ''} · uploaded ${escHtml(r.uploaded_at)} UTC</div>
+      ${r.notes ? '<div class="meta">' + escHtml(r.notes) + '</div>' : ''}
+      <div class="files">${r.files.map(f =>
+        `<a href="/api/files/${f.id}" target="_blank" rel="nofollow">📄 ${escHtml(f.original_name)} (${(f.size_bytes / 1024 / 1024).toFixed(1)} MB)</a>`).join('')}</div>
+    </div>`).join('') || '<p class="muted">No reports uploaded yet for this address. <a href="/#upload">Upload the first one</a>.</p>'}
+  </div>
+  <div class="card">
+    <h2 style="font-size:1.05rem;">Need an inspection at this property?</h2>
+    <p class="muted" style="margin-top:6px;">A licensed local inspector will contact you with pricing. Free, no obligation.</p>
+    <a class="btn" href="/#quote">Request a quote</a>
+  </div>
+  <p class="muted"><a href="/">← Search other addresses</a></p>
+</main>
+</body>
+</html>`;
+}
+
+app.get(['/property/:id', '/property/:id/:slug'], (req, res) => {
+  const id = Number(req.params.id);
+  const prop = Number.isInteger(id) && id > 0
+    ? db.prepare('SELECT * FROM properties WHERE id = ?').get(id) : null;
+  if (!prop) {
+    return res.status(404).send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Property not found</title><meta name="robots" content="noindex"></head><body><h1>Property not found</h1><p><a href="/">Search the registry</a></p></body></html>`);
+  }
+  const slug = slugify(prop.display_address);
+  if (req.params.slug !== slug) return res.redirect(301, `/property/${id}/${slug}`);
+  const reports = db.prepare(`
+    SELECT * FROM reports WHERE property_id = ?
+    ORDER BY inspection_date DESC, uploaded_at DESC`).all(id);
+  const filesStmt = db.prepare('SELECT id, original_name, mime_type, size_bytes FROM report_files WHERE report_id = ?');
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(propertyPageHtml(prop, reports.map(r => ({ ...r, files: filesStmt.all(r.id) }))));
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  const rows = db.prepare(`
+    SELECT p.id, p.display_address, p.created_at, MAX(r.uploaded_at) AS last_upload
+    FROM properties p LEFT JOIN reports r ON r.property_id = p.id
+    GROUP BY p.id ORDER BY p.id LIMIT 45000`).all();
+  const day = s => (s || '').slice(0, 10);
+  const urls = [
+    `  <url><loc>${BASE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`
+  ].concat(rows.map(p => {
+    const lastmod = day(p.last_upload || p.created_at);
+    return `  <url><loc>${escHtml(`${BASE_URL}/property/${p.id}/${slugify(p.display_address)}`)}</loc>` +
+      (lastmod ? `<lastmod>${lastmod}</lastmod>` : '') +
+      `<changefreq>weekly</changefreq><priority>0.7</priority></url>`;
+  }));
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`);
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${BASE_URL}/sitemap.xml\n`);
+});
+
 // Multer / generic error handler
 app.use((err, req, res, next) => res.status(400).json({ error: err.message }));
 

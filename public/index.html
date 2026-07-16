@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Inspection Report Registry — US Property Inspection Reports</title>
+<meta name="description" content="Free nationwide registry of US property inspection reports. Look up inspection history for any address, upload reports, or request a quote from a local home inspector.">
+<link rel="canonical" href="https://inspection-report-registry.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Inspection Report Registry — US Property Inspection Reports">
+<meta property="og:description" content="Look up inspection history for any US address, upload reports, or request a quote from a local home inspector.">
+<meta property="og:url" content="https://inspection-report-registry.onrender.com/">
+<meta property="og:site_name" content="Inspection Report Registry">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Inspection Report Registry","url":"https://inspection-report-registry.onrender.com/","description":"Free nationwide registry of US property inspection reports."}</script>
 <style>
   :root {
     --brand: #1a5f4a; --brand-light: #2d8a6e; --bg: #f7f8f7;
@@ -179,7 +187,15 @@ function showTab(name) {
     document.getElementById('panel-'+t).style.display = t === name ? '' : 'none';
     document.getElementById('tab-'+t).classList.toggle('active', t === name);
   }
+  if (('#' + name) !== location.hash) history.replaceState(null, '', name === 'search' ? location.pathname : '#' + name);
 }
+// Deep links: /#quote and /#upload open those tabs directly
+function tabFromHash() {
+  const h = location.hash.slice(1);
+  if (['search','upload','quote'].includes(h)) showTab(h);
+}
+window.addEventListener('hashchange', tabFromHash);
+tabFromHash();
 
 // ---- Search ----
 let debounce;
@@ -218,6 +234,7 @@ async function loadProperty(id) {
         ${property.verified ? '<span class="badge ok">✓ verified address</span>' : '<span class="badge warn">unverified</span>'}
       </h2>
       <p class="newest-note">${reports.length} report${reports.length == 1 ? '' : 's'}, newest first</p>
+      <p class="newest-note"><a href="/property/${property.id}" style="color:var(--brand);">🔗 Permanent link to this property page</a></p>
       ${reports.map(r => `
         <div class="report">
           <h3>${esc(r.title)} <span class="muted">— ${esc(r.report_type || 'Inspection')}</span></h3>

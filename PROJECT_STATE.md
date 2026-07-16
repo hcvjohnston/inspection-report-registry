@@ -1,4 +1,4 @@
-# Portfolio State — updated 2026-07-15 (v3: open portfolio, any profitable niche)
+# Portfolio State — updated 2026-07-16 (v4: SEO layer shipped)
 
 Goal: maximize legitimate profit by ~2026-10-13 (90-day window; GitHub PAT expires then).
 Owner: H <hunter@anthuriumservices.com>. GitHub: hcvjohnston.
@@ -15,26 +15,37 @@ tools mounted as routes) unless H approves new spend.
 Node 22: express + node:sqlite + multer, root of this repo. Auto-deploys from main.
 Revenue: ads + inspection lead-gen.
 
+## Done
+- 2026-07-15: Lead-gen quote form + leads table + token-gated admin export (JSON + CSV),
+  honeypot + per-IP rate limiting (commit fe62b5b).
+- 2026-07-16: SEO layer — server-rendered /property/:id/:slug pages (canonical, meta
+  description, OG tags, schema.org Place JSON-LD, 301 slug canonicalization, 404s),
+  dynamic /sitemap.xml (lastmod from latest upload), /robots.txt, homepage meta/OG/
+  JSON-LD, /#quote + /#upload deep links, permalinks from search results. Tested
+  locally: upload, property page, redirects, sitemap, leads all green.
+
 ## Backlog (priority order — one item per session, finish before starting next)
-1. Registry: lead-gen quote form + leads table + admin export (makes the live site sellable).
-2. Registry: SEO per-property pages + sitemap.xml + meta tags (makes the live site findable).
-3. RESEARCH.md: identify 5 fastest-to-revenue opportunities in ANY niche. For each:
+1. RESEARCH.md: identify 5 fastest-to-revenue opportunities in ANY niche. For each:
    search demand evidence, competition, monetization path, build cost, time to first
    dollar. Rank them. Sources cited, no guesswork presented as data.
-4. Build the #1 ranked opportunity from RESEARCH.md (MVP, shipped to the live service
+2. Build the #1 ranked opportunity from RESEARCH.md (MVP, shipped to the live service
    under tools/<name>/ or as static pages).
-5. Digital product #1: produce a genuinely excellent paid-quality asset (e.g. template
+3. Digital product #1: produce a genuinely excellent paid-quality asset (e.g. template
    pack or spreadsheet toolkit) in whatever niche research supports; stage it in
    products/ ready to list the moment H provides Gumroad/Stripe.
-6. Build the #2 ranked opportunity from RESEARCH.md.
-7. Ad slots across all pages, ready for AdSense activation.
-8. Registry: rate limiting + abuse protection.
-9. Ongoing: re-rank backlog each session based on results; append new pitches to RESEARCH.md.
+4. Build the #2 ranked opportunity from RESEARCH.md.
+5. Ad slots across all pages, ready for AdSense activation.
+6. Registry: broaden rate limiting/abuse protection beyond /api/leads (uploads especially).
+7. Ongoing: re-rank backlog each session based on results; append new pitches to RESEARCH.md.
 
 ## NEEDS FROM H
 - Custom domain(s) (~$10/yr each) — biggest SEO/credibility lever for any of these.
-- Gumroad or Stripe account — unblocks selling digital products (backlog #5).
+- Gumroad or Stripe account — unblocks selling digital products (backlog #3).
 - AdSense account once traffic justifies it (will flag when).
+- Google Search Console: verify the site and submit https://inspection-report-registry.onrender.com/sitemap.xml
+  (needs H's Google account; ~5 min; makes the new SEO pages actually get crawled).
+- Set ADMIN_TOKEN env var on Render (Dashboard -> service -> Environment) to enable
+  lead export at /api/admin/leads.csv?token=... — leads are being stored either way.
 - Replace the full-access PAT with one scoped to this repo (security).
 
 ## Conventions for automated work sessions
