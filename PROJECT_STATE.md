@@ -1,4 +1,4 @@
-# Portfolio State — updated 2026-07-16 (v4: SEO layer shipped)
+# Portfolio State — updated 2026-07-17 (v5: opportunity research done)
 
 Goal: maximize legitimate profit by ~2026-10-13 (90-day window; GitHub PAT expires then).
 Owner: H <hunter@anthuriumservices.com>. GitHub: hcvjohnston.
@@ -23,23 +23,29 @@ Revenue: ads + inspection lead-gen.
   dynamic /sitemap.xml (lastmod from latest upload), /robots.txt, homepage meta/OG/
   JSON-LD, /#quote + /#upload deep links, permalinks from search results. Tested
   locally: upload, property page, redirects, sitemap, leads all green.
+- 2026-07-17: RESEARCH.md — 5 opportunities ranked by time-to-first-dollar, sources
+  cited (Ahrefs 2026-07-16 free-tools data, lead pricing $20-40 from 99calls/BuiltRight,
+  Spectora $109/mo anchor, Etsy market evidence). #1: property calculator cluster
+  anchored by a home inspection cost calculator feeding the live lead form.
 
 ## Backlog (priority order — one item per session, finish before starting next)
-1. RESEARCH.md: identify 5 fastest-to-revenue opportunities in ANY niche. For each:
-   search demand evidence, competition, monetization path, build cost, time to first
-   dollar. Rank them. Sources cited, no guesswork presented as data.
-2. Build the #1 ranked opportunity from RESEARCH.md (MVP, shipped to the live service
-   under tools/<name>/ or as static pages).
-3. Digital product #1: produce a genuinely excellent paid-quality asset (e.g. template
-   pack or spreadsheet toolkit) in whatever niche research supports; stage it in
-   products/ ready to list the moment H provides Gumroad/Stripe.
-4. Build the #2 ranked opportunity from RESEARCH.md.
+1. Build RESEARCH.md #1: home inspection cost calculator at tools/inspection-cost-
+   calculator/ — inputs sqft/age/region/add-ons, honest $300-500 baseline w/ cited
+   sources on-page, CTA into the existing /#quote lead form. Then follow-on
+   calculators (roof pitch KD 13, deck material KD 9) as separate pages.
+2. Digital product #1 (RESEARCH.md #2): Home Inspector Checklist & Report Template
+   Pack, staged in products/ ready for the moment H provides Gumroad/Stripe; free
+   sample as lead magnet on the site.
+3. RESEARCH.md #3: Landlord Rental Property Spreadsheet Toolkit (also payment-blocked).
+4. RESEARCH.md #4: low-KD template/download pages cluster with email capture.
 5. Ad slots across all pages, ready for AdSense activation.
 6. Registry: broaden rate limiting/abuse protection beyond /api/leads (uploads especially).
 7. Ongoing: re-rank backlog each session based on results; append new pitches to RESEARCH.md.
 
 ## NEEDS FROM H
 - Custom domain(s) (~$10/yr each) — biggest SEO/credibility lever for any of these.
+- Gumroad/Stripe is now the single biggest revenue unblock: RESEARCH.md #2 and #3 are
+  both product plays that can sell within days of an account existing.
 - Gumroad or Stripe account — unblocks selling digital products (backlog #3).
 - AdSense account once traffic justifies it (will flag when).
 - Google Search Console: verify the site and submit https://inspection-report-registry.onrender.com/sitemap.xml
