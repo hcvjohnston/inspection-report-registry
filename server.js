@@ -415,6 +415,14 @@ app.get(['/property/:id', '/property/:id/:slug'], (req, res) => {
   res.send(propertyPageHtml(prop, reports.map(r => ({ ...r, files: filesStmt.all(r.id) }))));
 });
 
+// ---------- Free tools (tools/<name>/index.html mounted as routes) ----------
+const TOOL_PAGES = ['inspection-cost-calculator'];
+for (const name of TOOL_PAGES) {
+  app.get(`/tools/${name}`, (req, res) =>
+    res.sendFile(path.join(__dirname, 'tools', name, 'index.html')));
+  app.get(`/tools/${name}/`, (req, res) => res.redirect(301, `/tools/${name}`));
+}
+
 app.get('/sitemap.xml', (req, res) => {
   const rows = db.prepare(`
     SELECT p.id, p.display_address, p.created_at, MAX(r.uploaded_at) AS last_upload
@@ -423,7 +431,9 @@ app.get('/sitemap.xml', (req, res) => {
   const day = s => (s || '').slice(0, 10);
   const urls = [
     `  <url><loc>${BASE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`
-  ].concat(rows.map(p => {
+  ].concat(TOOL_PAGES.map(name =>
+    `  <url><loc>${BASE_URL}/tools/${name}</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>`
+  )).concat(rows.map(p => {
     const lastmod = day(p.last_upload || p.created_at);
     return `  <url><loc>${escHtml(`${BASE_URL}/property/${p.id}/${slugify(p.display_address)}`)}</loc>` +
       (lastmod ? `<lastmod>${lastmod}</lastmod>` : '') +

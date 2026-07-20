@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home Inspection Cost Calculator (2026) — Estimate by Size, State &amp; Age</title>
+<meta name="description" content="Free 2026 home inspection cost calculator. Estimate your inspection price by square footage, state, home age, and add-ons like radon or termite testing. Based on published HomeGuide and HomeAdvisor data. Typical range: $300–$500.">
+<link rel="canonical" href="https://inspection-report-registry.onrender.com/tools/inspection-cost-calculator">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Home Inspection Cost Calculator (2026)">
+<meta property="og:description" content="Estimate your home inspection cost by square footage, state, home age, and add-ons. Free, no signup, sources cited.">
+<meta property="og:url" content="https://inspection-report-registry.onrender.com/tools/inspection-cost-calculator">
+<meta property="og:site_name" content="Inspection Report Registry">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Home Inspection Cost Calculator","url":"https://inspection-report-registry.onrender.com/tools/inspection-cost-calculator","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Estimate the cost of a home inspection by square footage, state, home age, property type, and specialty add-ons, using published 2026 pricing data."}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How much does a home inspection cost in 2026?","acceptedAnswer":{"@type":"Answer","text":"Most standard home inspections cost between $200 and $500, with national averages around $340 (HomeGuide) to $343 (HomeAdvisor data, most homeowners paying $296–$424). The final price depends on the home's size, age, location, and any specialty add-on inspections."}},
+{"@type":"Question","name":"Who pays for the home inspection?","acceptedAnswer":{"@type":"Answer","text":"The buyer typically hires, schedules, and pays for the home inspection, usually shortly after the offer is accepted. Sellers sometimes pay for a pre-listing inspection instead."}},
+{"@type":"Question","name":"Does home size change the inspection price?","acceptedAnswer":{"@type":"Answer","text":"Yes. Larger homes take longer to inspect. Published 2026 tiers run from roughly $200–$250 for homes under 1,000 sq ft up to $450–$500+ for homes of 2,501–3,000 sq ft."}},
+{"@type":"Question","name":"What do specialty add-on inspections cost?","acceptedAnswer":{"@type":"Answer","text":"Per HomeAdvisor data: radon testing about $250, termite/pest $75–$325, septic $200–$900, sewer scope $270–$1,734, mold about $660, and pool inspections $200–$500."}}
+]}
+</script>
+<style>
+  :root { --brand:#1a5f4a; --brand-light:#2d8a6e; --bg:#f7f8f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#e5e7eb; }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); }
+  header { background:var(--brand); color:#fff; padding:18px 24px; }
+  header a { color:#fff; text-decoration:none; font-size:1.25rem; font-weight:700; }
+  main { max-width:860px; margin:0 auto; padding:24px 16px 64px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+  h1 { font-size:1.45rem; margin-bottom:6px; }
+  h2 { font-size:1.05rem; margin-bottom:8px; }
+  label { display:block; font-weight:600; font-size:.9rem; margin:12px 0 4px; }
+  input, select { width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:#fff; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+  @media (max-width:600px) { .grid2 { grid-template-columns:1fr; } }
+  .checks label { font-weight:400; margin:6px 0; display:flex; gap:8px; align-items:baseline; font-size:.92rem; }
+  .checks input { width:auto; }
+  .muted { color:var(--muted); font-size:.9rem; }
+  .btn { display:inline-block; margin-top:16px; padding:12px 24px; background:var(--brand); color:#fff; border:0; border-radius:8px; font-weight:600; font-size:1rem; text-decoration:none; cursor:pointer; }
+  .btn:hover { background:var(--brand-light); }
+  .result { display:none; border-left:4px solid var(--brand); background:#fafbfa; border-radius:0 8px 8px 0; padding:16px; margin-top:18px; }
+  .result .big { font-size:1.7rem; font-weight:700; color:var(--brand); }
+  .result ul { margin:10px 0 0 18px; font-size:.9rem; color:var(--muted); }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; margin-top:8px; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); }
+  th { background:#fafbfa; }
+  .cta { background:#eef7f3; border:1px solid #cfe8dd; }
+  ol.sources { margin:8px 0 0 18px; font-size:.85rem; color:var(--muted); }
+  ol.sources a { color:var(--brand); }
+  details { margin-top:10px; }
+  summary { cursor:pointer; font-weight:600; font-size:.95rem; }
+  .faq p { margin:6px 0 14px; font-size:.92rem; }
+</style>
+</head>
+<body>
+<header><a href="/">🏠 Inspection Report Registry</a></header>
+<main>
+  <div class="card">
+    <h1>Home Inspection Cost Calculator (2026)</h1>
+    <p class="muted">Estimate what a standard home inspection should cost based on your home's size, state, age, and any specialty add-ons. Built from published 2026 pricing data (HomeGuide, HomeAdvisor) — sources cited below. Most buyers pay <strong>$300–$500</strong>.</p>
+
+    <div class="grid2">
+      <div>
+        <label for="sqft">Home size (square feet)</label>
+        <input id="sqft" type="number" min="100" max="20000" step="50" value="2000" inputmode="numeric">
+      </div>
+      <div>
+        <label for="state">State</label>
+        <select id="state"></select>
+      </div>
+      <div>
+        <label for="ptype">Property type</label>
+        <select id="ptype">
+          <option value="single">Single-family home</option>
+          <option value="condo">Condo / townhome</option>
+          <option value="mobile1">Mobile home (single-wide)</option>
+          <option value="mobile2">Mobile home (double-wide)</option>
+        </select>
+      </div>
+      <div>
+        <label for="age">Year built</label>
+        <select id="age">
+          <option value="new">1980 or later</option>
+          <option value="old">Before 1980</option>
+        </select>
+      </div>
+    </div>
+
+    <label style="margin-top:16px;">Specialty add-on inspections (optional)</label>
+    <div class="checks" id="addons"></div>
+
+    <button class="btn" onclick="calc()">Calculate estimate</button>
+
+    <div class="result" id="result">
+      <div class="muted">Estimated inspection cost</div>
+      <div class="big" id="range"></div>
+      <ul id="breakdown"></ul>
+      <p class="muted" style="margin-top:10px;">This is an estimate from published national and state pricing data, not a quote. Actual prices vary by inspector, local demand, and property condition.</p>
+    </div>
+  </div>
+
+  <div class="card cta">
+    <h2>Get a real quote — free, no obligation</h2>
+    <p class="muted">A licensed local inspector will contact you with exact pricing for your property.</p>
+    <a class="btn" href="/#quote">Request a quote</a>
+  </div>
+
+  <div class="card">
+    <h2>How this estimate is calculated</h2>
+    <p class="muted">We start from HomeGuide's 2026 cost-by-square-footage table (e.g. $200–$250 under 1,000 sq ft, $300–$400 for 1,501–2,000 sq ft, $450–$500+ for 2,501–3,000 sq ft), adjust it by your state's published average range relative to the $200–$500 national range, add $100–$200 for homes built before 1980 (older homes take longer to inspect and may involve asbestos- or lead-era materials), and add the published price range of each specialty inspection you select. Homes over 3,000 sq ft are extrapolated at roughly $25 per additional 500 sq ft. Condo and mobile-home pricing uses HomeGuide's property-type figures. HomeAdvisor's national data (average $343; most homeowners pay $296–$424) is a useful cross-check on any result.</p>
+
+    <h2 style="margin-top:18px;">2026 cost by home size</h2>
+    <table>
+      <tr><th>Home size</th><th>Typical cost (standard inspection)</th></tr>
+      <tr><td>Under 1,000 sq ft</td><td>$200 – $250</td></tr>
+      <tr><td>1,001 – 1,500 sq ft</td><td>$250 – $300</td></tr>
+      <tr><td>1,501 – 2,000 sq ft</td><td>$300 – $400</td></tr>
+      <tr><td>2,001 – 2,500 sq ft</td><td>$400 – $450</td></tr>
+      <tr><td>2,501 – 3,000 sq ft</td><td>$450 – $500+</td></tr>
+    </table>
+    <p class="muted" style="margin-top:6px;">Source: HomeGuide 2026 home inspection cost guide.</p>
+
+    <h2 style="margin-top:18px;">Specialty add-on inspections</h2>
+    <table>
+      <tr><th>Add-on</th><th>Published cost</th></tr>
+      <tr><td>Radon testing</td><td>≈ $250</td></tr>
+      <tr><td>Termite / pest</td><td>$75 – $325</td></tr>
+      <tr><td>Septic</td><td>$200 – $900</td></tr>
+      <tr><td>Sewer scope</td><td>$270 – $1,734</td></tr>
+      <tr><td>Mold</td><td>≈ $660</td></tr>
+      <tr><td>Pool / spa</td><td>$200 – $500</td></tr>
+    </table>
+    <p class="muted" style="margin-top:6px;">Source: HomeAdvisor data via Rocket Mortgage's 2026 guide.</p>
+
+    <div class="faq">
+      <h2 style="margin-top:18px;">Frequently asked questions</h2>
+      <p><strong>How much does a home inspection cost in 2026?</strong><br>Most standard inspections run $200–$500, with national averages around $340 (HomeGuide) to $343 (HomeAdvisor; most homeowners pay $296–$424).</p>
+      <p><strong>Who pays for the inspection?</strong><br>The buyer typically hires, schedules, and pays for it shortly after an offer is accepted. Sellers occasionally pay for a pre-listing inspection.</p>
+      <p><strong>Is a home inspection required?</strong><br>Not by law, but lenders or insurers sometimes require one, and skipping it can leave you responsible for expensive undiscovered problems.</p>
+      <p><strong>How long does an inspection take?</strong><br>Usually 2–4 hours, with the written report delivered within about 1–3 days.</p>
+    </div>
+
+    <details>
+      <summary>Sources</summary>
+      <ol class="sources">
+        <li><a href="https://homeguide.com/costs/home-inspection-cost" rel="noopener" target="_blank">HomeGuide — How Much Does a Home Inspection Cost? (2026)</a>: national average $340, range $200–$500, cost-by-size and cost-by-state tables, +$100–$200 for pre-1980s homes, condo and mobile-home pricing.</li>
+        <li><a href="https://www.rocketmortgage.com/learn/home-inspection-cost" rel="noopener" target="_blank">Rocket Mortgage — A guide to home inspection costs in 2026</a> (HomeAdvisor data, updated Feb 2026): average $343, typical $296–$424, specialty inspection prices.</li>
+      </ol>
+      <p class="muted" style="margin-top:8px;">Figures last checked 2026-07-20. These are third-party published estimates; your local market may differ.</p>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>Already have an address in mind?</h2>
+    <p class="muted"><a href="/" style="color:var(--brand);">Search the free Inspection Report Registry</a> to see whether inspection reports have already been uploaded for that property.</p>
+  </div>
+</main>
+
+<script>
+// All pricing data below is transcribed from the cited sources (see Sources).
+// HomeGuide 2026: cost by square footage
+const TIERS = [
+  { max: 1000, lo: 200, hi: 250 },
+  { max: 1500, lo: 250, hi: 300 },
+  { max: 2000, lo: 300, hi: 400 },
+  { max: 2500, lo: 400, hi: 450 },
+  { max: 3000, lo: 450, hi: 500 }
+];
+// HomeGuide 2026: average cost by state
+const STATES = {
+  AL:[275,325], AK:[350,475], AZ:[275,350], AR:[200,400], CA:[350,500], CO:[250,600],
+  CT:[400,500], DE:[270,380], FL:[250,375], GA:[250,600], HI:[300,800], ID:[240,600],
+  IL:[300,600], IN:[250,600], IA:[300,450], KS:[350,400], KY:[200,450], LA:[200,350],
+  ME:[300,500], MD:[200,550], MA:[350,600], MI:[250,600], MN:[270,650], MS:[240,600],
+  MO:[300,550], MT:[250,375], NE:[200,550], NV:[250,600], NH:[300,500], NJ:[300,500],
+  NM:[200,500], NY:[200,700], NC:[300,600], ND:[250,400], OH:[200,450], OK:[225,550],
+  OR:[275,700], PA:[365,415], RI:[200,750], SC:[250,650], SD:[250,625], TN:[300,500],
+  TX:[350,600], UT:[200,600], VT:[275,650], VA:[300,700], WA:[500,700], WV:[225,600],
+  WI:[250,575], WY:[300,450], DC:null // DC not listed by source; national range used
+};
+const STATE_NAMES = { AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'District of Columbia',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming' };
+// HomeAdvisor via Rocket Mortgage 2026: specialty add-ons
+const ADDONS = [
+  { id:'radon',   label:'Radon testing (≈ $250)',            lo:250, hi:250 },
+  { id:'termite', label:'Termite / pest ($75–$325)',          lo:75,  hi:325 },
+  { id:'septic',  label:'Septic ($200–$900)',                 lo:200, hi:900 },
+  { id:'sewer',   label:'Sewer scope ($270–$1,734)',          lo:270, hi:1734 },
+  { id:'mold',    label:'Mold (≈ $660)',                      lo:660, hi:660 },
+  { id:'pool',    label:'Pool / spa ($200–$500)',             lo:200, hi:500 }
+];
+const NATIONAL_MID = 350; // midpoint of HomeGuide's $200–$500 national range
+
+const stateSel = document.getElementById('state');
+for (const [abbr, name] of Object.entries(STATE_NAMES).sort((a,b)=>a[1].localeCompare(b[1]))) {
+  const o = document.createElement('option');
+  o.value = abbr; o.textContent = name;
+  stateSel.appendChild(o);
+}
+stateSel.value = 'TX';
+document.getElementById('addons').innerHTML = ADDONS.map(a =>
+  `<label><input type="checkbox" id="ad-${a.id}"> ${a.label}</label>`).join('');
+
+const r5 = v => Math.round(v / 5) * 5;
+const fmt = v => '$' + v.toLocaleString('en-US');
+
+function calc() {
+  const sqft = Math.max(100, Math.min(20000, Number(document.getElementById('sqft').value) || 2000));
+  const st = stateSel.value;
+  const ptype = document.getElementById('ptype').value;
+  const old = document.getElementById('age').value === 'old';
+  const notes = [];
+
+  // Base range by size / property type
+  let lo, hi;
+  if (ptype === 'mobile1') { lo = 200; hi = 300; notes.push('Base: mobile home, single-wide — $200–$300 (HomeGuide)'); }
+  else if (ptype === 'mobile2') { lo = 250; hi = 450; notes.push('Base: mobile home, double-wide — $250–$450 (HomeGuide)'); }
+  else if (ptype === 'condo' && sqft <= 1000) { lo = 200; hi = 250; notes.push('Base: condo up to 1,000 sq ft — $200–$250 (HomeGuide)'); }
+  else {
+    const tier = TIERS.find(t => sqft <= t.max);
+    if (tier) { lo = tier.lo; hi = tier.hi; notes.push(`Base: ${sqft.toLocaleString()} sq ft — ${fmt(lo)}–${fmt(hi)} (HomeGuide size tier)`); }
+    else {
+      const extra = Math.ceil((sqft - 3000) / 500) * 25;
+      lo = 450 + extra; hi = 500 + extra;
+      notes.push(`Base: ${sqft.toLocaleString()} sq ft — extrapolated beyond the published 3,000 sq ft tier at ~$25 per extra 500 sq ft`);
+    }
+  }
+
+  // State adjustment (mobile homes use fixed published ranges; still adjust for region)
+  const sr = STATES[st];
+  if (sr) {
+    const f = ((sr[0] + sr[1]) / 2) / NATIONAL_MID;
+    lo = r5(lo * f); hi = r5(hi * f);
+    notes.push(`${STATE_NAMES[st]} adjustment: state average ${fmt(sr[0])}–${fmt(sr[1])} vs $200–$500 national (×${f.toFixed(2)})`);
+  } else {
+    notes.push(`${STATE_NAMES[st]}: no published state range — national pricing used`);
+  }
+
+  if (old) { lo += 100; hi += 200; notes.push('Built before 1980: +$100–$200 (older systems, possible asbestos/lead-era materials)'); }
+
+  for (const a of ADDONS) {
+    if (document.getElementById('ad-' + a.id).checked) {
+      lo += a.lo; hi += a.hi;
+      notes.push(`Add-on — ${a.label}`);
+    }
+  }
+
+  document.getElementById('range').textContent = fmt(lo) + ' – ' + fmt(hi);
+  document.getElementById('breakdown').innerHTML = notes.map(n => `<li>${n}</li>`).join('');
+  document.getElementById('result').style.display = 'block';
+}
+</script>
+</body>
+</html>

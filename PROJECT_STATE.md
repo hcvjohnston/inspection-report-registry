@@ -1,4 +1,4 @@
-# Portfolio State — updated 2026-07-17 (v5: opportunity research done)
+# Portfolio State — updated 2026-07-20 (v6: cost calculator live)
 
 Goal: maximize legitimate profit by ~2026-10-13 (90-day window; GitHub PAT expires then).
 Owner: H <hunter@anthuriumservices.com>. GitHub: hcvjohnston.
@@ -23,16 +23,26 @@ Revenue: ads + inspection lead-gen.
   dynamic /sitemap.xml (lastmod from latest upload), /robots.txt, homepage meta/OG/
   JSON-LD, /#quote + /#upload deep links, permalinks from search results. Tested
   locally: upload, property page, redirects, sitemap, leads all green.
+- 2026-07-20: Backlog #1 shipped — home inspection cost calculator at
+  /tools/inspection-cost-calculator (tools/inspection-cost-calculator/index.html,
+  mounted via TOOL_PAGES in server.js, added to sitemap, linked from homepage).
+  Honest sourced pricing: HomeGuide 2026 (avg $340, $200-500 range, size tiers,
+  50-state table, pre-1980 +$100-200, condo/mobile pricing) + HomeAdvisor via
+  Rocket Mortgage Feb-2026 (avg $343, typical $296-424, add-on prices). Figures
+  re-verified via live fetch 2026-07-20. Inputs: sqft/state/type/age/add-ons;
+  breakdown shown per estimate; CTA into /#quote lead form; WebApplication +
+  FAQPage JSON-LD, canonical, OG tags. Tested locally: route 200, sitemap entry,
+  homepage link, leads API still green.
 - 2026-07-17: RESEARCH.md — 5 opportunities ranked by time-to-first-dollar, sources
   cited (Ahrefs 2026-07-16 free-tools data, lead pricing $20-40 from 99calls/BuiltRight,
   Spectora $109/mo anchor, Etsy market evidence). #1: property calculator cluster
   anchored by a home inspection cost calculator feeding the live lead form.
 
 ## Backlog (priority order — one item per session, finish before starting next)
-1. Build RESEARCH.md #1: home inspection cost calculator at tools/inspection-cost-
-   calculator/ — inputs sqft/age/region/add-ons, honest $300-500 baseline w/ cited
-   sources on-page, CTA into the existing /#quote lead form. Then follow-on
-   calculators (roof pitch KD 13, deck material KD 9) as separate pages.
+1. Follow-on calculators from RESEARCH.md #1 cluster: roof pitch calculator
+   (11,000/mo, KD 13) then deck material calculator (1,200/mo, KD 9), each as
+   tools/<name>/ pages cross-linked with the inspection cost calculator.
+   (Anchor calculator shipped 2026-07-20.)
 2. Digital product #1 (RESEARCH.md #2): Home Inspector Checklist & Report Template
    Pack, staged in products/ ready for the moment H provides Gumroad/Stripe; free
    sample as lead magnet on the site.
